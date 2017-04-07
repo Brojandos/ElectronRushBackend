@@ -1,0 +1,45 @@
+@charset "utf-8";
+
+body, html {
+	margin: 0px;
+	padding: 0px;
+}
+
+#container {
+	min-width: 550px;
+	width: 100%;
+	margin: 0 auto;
+}
+
+#header {
+	background-color: #5270C0;
+}
+
+#left {
+	background-color: #68B168;
+	width: 150px;
+	float: left;
+}
+
+#right {
+	background-color: #68B168;
+	width: 100px;
+	float: right;
+}
+
+#content {
+	background-color: #DC484B;
+	margin-left: 152px;
+	margin-right: 102px;
+}
+
+#clear {
+	height: 0px;
+	font-size: 1px;
+	line-height: 0px;
+	clear: both;
+}
+
+#footer {
+	background-color: #EFDA4E;
+}

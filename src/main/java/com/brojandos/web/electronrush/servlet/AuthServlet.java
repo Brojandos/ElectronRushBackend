@@ -5,7 +5,6 @@ import com.brojandos.web.electronrush.common.Constants;
 import com.brojandos.web.electronrush.entity.User;
 import com.brojandos.web.electronrush.model.LoginBean;
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -17,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
  * @creation_date: Mar 16, 2017
  */
 
-@WebServlet("/auth")
+@WebServlet(Constants.SLASH + Constants.AUTHORIZATION_URI)
 public class AuthServlet extends HttpServlet {
     LoginBean bean;
     User user;
@@ -25,7 +24,6 @@ public class AuthServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("text/html");
-        PrintWriter out = resp.getWriter();
         
         user = new User();
         user.setName(req.getParameter(Constants.PARAMETER_NAME));
@@ -38,17 +36,17 @@ public class AuthServlet extends HttpServlet {
         req.setAttribute(Constants.MODEL_ATTRIBUTE_NAME, bean);
         
         if (bean.validate()) {
-            req.getRequestDispatcher(Constants.DEFAULT_PAGES_PATH + "auth/login-success.jsp")
+            req.getRequestDispatcher(Constants.AUTHORIZATION_SUCCESS_PAGE_PATH)
                     .forward(req, resp);
         } else {
-            req.getRequestDispatcher(Constants.DEFAULT_PAGES_PATH + "auth/login-failure.jsp")
+            req.getRequestDispatcher(Constants.AUTHORIZATION_FAILURE_PAGE_PATH)
                     .forward(req, resp);
         }
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher(Constants.DEFAULT_PAGES_PATH + "auth/auth.jsp").forward(req, resp);
+        req.getRequestDispatcher(Constants.AUTHORIZATION_PAGE).forward(req, resp);
     }
     
 }

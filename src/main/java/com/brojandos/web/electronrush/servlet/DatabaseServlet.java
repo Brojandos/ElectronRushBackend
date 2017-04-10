@@ -1,7 +1,9 @@
 package com.brojandos.web.electronrush.servlet;
 
 import com.brojandos.web.electronrush.common.Constants;
+import com.brojandos.web.electronrush.model.ErrorBean;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -22,54 +24,63 @@ import org.apache.log4j.Logger;
 public class DatabaseServlet extends HttpServlet {
     private Connection connection;
     private static final Logger logger = Logger.getLogger(DatabaseServlet.class);
+    private static PrintWriter out;
+    private static ErrorBean bean;
     
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        out = resp.getWriter();
         connection = getRemoteConnection();
+        if (connection != null) out.println("successfull connection!");
         req.getRequestDispatcher(Constants.DATABASE_CONSOLE_PAGE).forward(req, resp);
     }
     
     
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        connection = getRemoteConnection();
+        if (connection == null) {
+            if (bean == null) {
+                bean = new ErrorBean();
+                bean.setErrorText("connection is null");
+            }
+            req.setAttribute("bean", bean);
+            req.getRequestDispatcher(Constants.ERROR_PAGE_PATH).forward(req, resp);
+            return;
+        }
         try {
             Statement statement = connection.createStatement();
             statement.addBatch(req.getParameter("console"));
             statement.executeBatch();
             statement.close();
         } catch (SQLException ex) {
-            logger.trace(ex);
+            bean = new ErrorBean();
+            bean.setErrorText(ex.toString());
+            req.setAttribute("bean", bean);
+            req.getRequestDispatcher(Constants.ERROR_PAGE_PATH).forward(req, resp);
+            
         } finally {
             if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
         }
     }
     
     private static Connection getRemoteConnection() {
-        if (System.getenv("RDS_HOSTNAME") != null) {
-            try {
-                Class.forName("org.postgresql.Driver");
-                String dbName = System.getenv("RDS_DB_NAME");
-                String userName = System.getenv("RDS_USERNAME");
-                String password = System.getenv("RDS_PASSWORD");
-                String hostname = System.getenv("RDS_HOSTNAME");
-                String port = System.getenv("RDS_PORT");
-                String jdbcUrl = "jdbc:postgresql://"
-                        + hostname + ":"
-                        + port + "/"
-                        + dbName + "?user="
-                        + userName + "&password="
-                        + password;
-                logger.trace("Getting remote connection with connection string from environment variables.");
-                Connection con = DriverManager.getConnection(jdbcUrl);
-                logger.info("Remote connection successful.");
-                return con;
-            } catch (ClassNotFoundException e) {
-                logger.warn(e.toString());
-            } catch (SQLException e) {
-                logger.warn(e.toString());
-            }
+        Connection connection = null;
+        try {
+            Class.forName("org.postgresql.Driver");
+            String dbName = System.getProperty("RDS_DB_NAME");
+            String userName = System.getProperty("RDS_USERNAME");
+            String password = System.getProperty("RDS_PASSWORD");
+            String hostname = System.getProperty("RDS_HOSTNAME");
+            String port = System.getProperty("RDS_PORT");
+            String jdbcUrl = "jdbc:postgresql://" + hostname + ":" + port + "/" + dbName + "?user=Brojandos&password=password";
+            connection = DriverManager.getConnection(jdbcUrl);
+        } catch (ClassNotFoundException e) {
+            bean = new ErrorBean();
+            bean.setErrorText(e.toString());
+        } catch (SQLException e) {
+            bean = new ErrorBean();
+            bean.setErrorText(e.toString());
         }
-        return null;
+        return connection;
     }
 }

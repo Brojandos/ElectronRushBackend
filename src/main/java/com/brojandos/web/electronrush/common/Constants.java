@@ -22,4 +22,13 @@ public class Constants {
     public static final String AUTHORIZATION_SUCCESS_PAGE_PATH = DEFAULT_PAGES_PATH + "auth/login-success.jsp";
     public static final String AUTHORIZATION_FAILURE_PAGE_PATH = DEFAULT_PAGES_PATH + "auth/login-failure.jsp";
     public static final String DATABASE_CONSOLE_PAGE = DEFAULT_PAGES_PATH + "database/db-console.jsp";
+    public static final String ERROR_PAGE_PATH = DEFAULT_PAGES_PATH + "error/error.jsp";
+    public static final String DATABASE_DRIVER = "org.postgresql.Driver";
+    public static final String DATABASE_URL = "jdbc:postgresql://mydb.cn1cngavy0zp.us-west-2.rds.amazonaws.com:5432/mydb";
+    public static final String RDS_HOSTNAME = "mydb.cn1cngavy0zp.us-west-2.rds.amazonaws.com";
+    public static final String RDS_PORT = "5432";
+    public static final String RDS_DB_NAME = "mydb";
+    public static final String RDS_USERNAME = "Brojandos";
+    public static final String RDS_PASSWORD = "password";
+    
 }

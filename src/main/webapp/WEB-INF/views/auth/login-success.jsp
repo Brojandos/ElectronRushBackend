@@ -9,10 +9,7 @@
 <%@page import="com.brojandos.web.electronrush.common.Constants"%>
 
 <p>You are successfully logged in!</p>  
-<%  
-    /*User user = (User)request.getAttribute("user");  
-    out.print(user.getPassword());*/
-    
+<%
     LoginBean bean = (LoginBean)request.getAttribute("bean");
-    out.print(bean.getName());
+    out.print("Welcome, " + bean.getName());
 %>

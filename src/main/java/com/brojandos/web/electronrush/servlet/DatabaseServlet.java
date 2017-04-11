@@ -13,17 +13,16 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.log4j.Logger;
 
 /**
  * @author: Brojandos
  * @creation_date: Apr 2, 2017
  */
 
-@WebServlet("/db-console")
+@WebServlet(Constants.DATABASE_BATCH_URI)
 public class DatabaseServlet extends HttpServlet {
     private Connection connection;
-    private static final Logger logger = Logger.getLogger(DatabaseServlet.class);
+    //private static final Logger logger = Logger.getLogger(DatabaseServlet.class);
     private static PrintWriter out;
     private static ErrorBean bean;
     
@@ -32,7 +31,7 @@ public class DatabaseServlet extends HttpServlet {
         out = resp.getWriter();
         connection = getRemoteConnection();
         if (connection != null) out.println("successfull connection!");
-        req.getRequestDispatcher(Constants.DATABASE_CONSOLE_PAGE).forward(req, resp);
+        req.getRequestDispatcher(Constants.DATABASE_BATCH_PAGE).forward(req, resp);
     }
     
     
@@ -43,7 +42,7 @@ public class DatabaseServlet extends HttpServlet {
                 bean = new ErrorBean();
                 bean.setErrorText("connection is null");
             }
-            req.setAttribute("bean", bean);
+            req.setAttribute(Constants.MODEL_ATTRIBUTE_NAME, bean);
             req.getRequestDispatcher(Constants.ERROR_PAGE_PATH).forward(req, resp);
             return;
         }
@@ -55,9 +54,8 @@ public class DatabaseServlet extends HttpServlet {
         } catch (SQLException ex) {
             bean = new ErrorBean();
             bean.setErrorText(ex.toString());
-            req.setAttribute("bean", bean);
+            req.setAttribute(Constants.MODEL_ATTRIBUTE_NAME, bean);
             req.getRequestDispatcher(Constants.ERROR_PAGE_PATH).forward(req, resp);
-            
         } finally {
             if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
         }
@@ -66,14 +64,8 @@ public class DatabaseServlet extends HttpServlet {
     private static Connection getRemoteConnection() {
         Connection connection = null;
         try {
-            Class.forName("org.postgresql.Driver");
-            String dbName = System.getProperty("RDS_DB_NAME");
-            String userName = System.getProperty("RDS_USERNAME");
-            String password = System.getProperty("RDS_PASSWORD");
-            String hostname = System.getProperty("RDS_HOSTNAME");
-            String port = System.getProperty("RDS_PORT");
-            String jdbcUrl = "jdbc:postgresql://" + hostname + ":" + port + "/" + dbName + "?user=Brojandos&password=password";
-            connection = DriverManager.getConnection(jdbcUrl);
+            Class.forName(Constants.DATABASE_DRIVER);
+            connection = DriverManager.getConnection(Constants.JDBC_URL);
         } catch (ClassNotFoundException e) {
             bean = new ErrorBean();
             bean.setErrorText(e.toString());

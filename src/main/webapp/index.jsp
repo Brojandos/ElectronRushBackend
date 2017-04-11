@@ -18,9 +18,12 @@
                 </form>
             </div>
             <div id="right">RIGHT</div>
-            <div id="content">CONTENT 
-                <form name="db-console" method="get" action="db-console">
-                    <input type="submit" value="console">
+            <div id="content">CONTENT
+                <form name="db-batch" method="get" action="db-batch">
+                    <input type="submit" value="batch">
+                </form>
+                <form name="db-query" method="get" action="db-query">
+                    <input type="submit" value="query">
                 </form>
             </div>
             <div id="clear"></div>

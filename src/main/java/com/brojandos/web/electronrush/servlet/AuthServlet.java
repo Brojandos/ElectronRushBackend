@@ -2,7 +2,6 @@ package com.brojandos.web.electronrush.servlet;
 
 
 import com.brojandos.web.electronrush.common.Constants;
-import com.brojandos.web.electronrush.entity.User;
 import com.brojandos.web.electronrush.model.LoginBean;
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -16,19 +15,13 @@ import javax.servlet.http.HttpServletResponse;
  * @creation_date: Mar 16, 2017
  */
 
-@WebServlet(Constants.SLASH + Constants.AUTHORIZATION_URI)
+@WebServlet(Constants.AUTHORIZATION_URI)
 public class AuthServlet extends HttpServlet {
     LoginBean bean;
-    User user;
     
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("text/html");
-        
-        user = new User();
-        user.setName(req.getParameter(Constants.PARAMETER_NAME));
-        user.setPassword(req.getParameter(Constants.PARAMETER_PASSWORD));
-        req.setAttribute(Constants.MODEL_ATTRIBUTE_NAME, user);
         
         bean = new LoginBean();
         bean.setName(req.getParameter(Constants.PARAMETER_NAME));
